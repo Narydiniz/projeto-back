@@ -1,30 +1,33 @@
-// Inportação das bibliotecas e frameworks 
-const express = require('express'); //Cria e gerencia servidores web e APIs
-const cors = require('cors'); // Permite que o servidor aceite diferentes origens de requisição
-const dotenv = require('dotenv'); // Gerencia variáveis de ambiente, como credenciais de banco de dados
-// Configurando as variáveis de ambiente 
-const bodyParser = require('body-parser'); // Analisa o corpo das requisições HTPP
+const dotenv = require('dotenv');  // Importa o pacote dotenv para gerenciar variáveis de ambiente 
 
-dotenv.config();
+dotenv.config(); // Carrega as variáveis definidas no arquivo .env para process.env
 
-const db = require('./config/db'); // Importa a conexão com o banco de dados
+const express = require('express'); // Importa o framework Express 
+
+const cors = require('cors');  //Importa o pacote cors para permitir requisições de diferentes origens 
+const bodyParser = require('body-parser'); // Importa o pacote body-parser para analisar o corpo das requisições HTTP
+
+const db = require('./config/db.js'); // Importa a conexão com o banco de dados
 
 const productsRouters = require('./routes/products.js'); // Importa as rotas de produtos
 
-//Aplicação express armazenada na constante app
-const app = express();
-//Configura o cors e o body-parser
-app.use(cors()); //Habilita o cors para todas as rotas
-app.use(bodyParser.json()); //Habilita o body-parser para analisar as requisições Json
+const app = express(); // Inicializa uma nova aplicação Express 
+
+app.use(cors()); // Habilita o CORS para todas as rotas
+app.use(bodyParser.json()); // Configura o body-parser para analisar requisições JSON
 app.use('/api/products',productsRouters); // Usar as rotas de transações para todas as requisições que começam com /api/transactions
 
-//Rota inicial do servidor com a rota get com a URL na raiz do projeto
-app.get('/', (req, res) =>{
-    res.send('SERVIDOR CONECTADO!')
+
+//Rota inicial para testar o servidor 
+
+app.get('/', (req,res) => {
+    res.send('Servidor está funcionando');
 });
 
-//Configurando o servidor para executar na porta 5000 
-const PORT = process.env.PORT || 5000;
-app.listen(PORT,() =>{
-    console.log(`Servidor rodando na porta ${PORT}`);
+// Define a porta a par r da variável de ambiente ou usa a porta 3000 como padrão
+
+const PORT = process.env.Port || 3000;
+
+app.listen(PORT, ()=>{
+    console.log(`Servidor esta rodando na PORTA ${PORT}`);
 });
