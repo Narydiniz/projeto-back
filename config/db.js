@@ -21,7 +21,7 @@ db.connect((err) =>{
         console.error('Erro ao conectar ao banco de dados', err); // Exibição da mensagem de erro 
         return;
     }
-    console.log(`Conectando ao db no MySQL ${process.env.DB_NAME}`);
+    console.log(`Conectado ao db no MySQL ${process.env.DB_NAME}`);
 
 });
 

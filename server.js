@@ -1,22 +1,25 @@
 // Inportação das bibliotecas e frameworks 
-const dotenv = require('dotenv'); // Gerencia variáveis de ambiente, como credenciais de banco de dados
 const express = require('express'); //Cria e gerencia servidores web e APIs
 const cors = require('cors'); // Permite que o servidor aceite diferentes origens de requisição
+const dotenv = require('dotenv'); // Gerencia variáveis de ambiente, como credenciais de banco de dados
+// Configurando as variáveis de ambiente 
 const bodyParser = require('body-parser'); // Analisa o corpo das requisições HTPP
+
+dotenv.config();
 
 const db = require('./config/db'); // Importa a conexão com o banco de dados
 
-// Configurando as variáveis de ambiente 
-dotenv.config();
+const productsRouters = require('./routes/products.js'); // Importa as rotas de produtos
 
 //Aplicação express armazenada na constante app
 const app = express();
 //Configura o cors e o body-parser
 app.use(cors()); //Habilita o cors para todas as rotas
 app.use(bodyParser.json()); //Habilita o body-parser para analisar as requisições Json
+app.use('/api/products',productsRouters); // Usar as rotas de transações para todas as requisições que começam com /api/transactions
 
 //Rota inicial do servidor com a rota get com a URL na raiz do projeto
-app.get('/', (req,res) =>{
+app.get('/', (req, res) =>{
     res.send('SERVIDOR CONECTADO!')
 });
 
