@@ -1,8 +1,10 @@
 // Inportação das bibliotecas e frameworks 
-const express = require('express'); //Cria e gerencia servidores web e APIs
 const dotenv = require('dotenv'); // Gerencia variáveis de ambiente, como credenciais de banco de dados
+const express = require('express'); //Cria e gerencia servidores web e APIs
 const cors = require('cors'); // Permite que o servidor aceite diferentes origens de requisição
 const bodyParser = require('body-parser'); // Analisa o corpo das requisições HTPP
+
+const db = require('./config/db'); // Importa a conexão com o banco de dados
 
 // Configurando as variáveis de ambiente 
 dotenv.config();
@@ -15,7 +17,7 @@ app.use(bodyParser.json()); //Habilita o body-parser para analisar as requisiç�
 
 //Rota inicial do servidor com a rota get com a URL na raiz do projeto
 app.get('/', (req,res) =>{
-    res.send('Servidor rodando corretamente!')
+    res.send('SERVIDOR CONECTADO!')
 });
 
 //Configurando o servidor para executar na porta 5000 
