@@ -1,4 +1,5 @@
 const jwt = require("jsonwebtoken");
+
 const authMiddleware = (req, res, next) => {
   const token = req.header("Authorization").replace("Bearer ", ""); // Obtém o token do cabeçalho da requisição
     if (!token) {

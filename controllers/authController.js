@@ -1,3 +1,4 @@
+const crypto = require('crypto')
 const db = require("../config/db"); // Importa a configuração do banco de dados
 const bcrypt = require("bcrypt"); // Importa o bcrypt para criptografar senhas
 const jwt = require("jsonwebtoken"); // Importa o jsonwebtoken para gerar tokens JWT
@@ -9,9 +10,8 @@ const registerUser = async (req, res) => {
 
   // Verificar se o usuário já existe no banco de dados
   try {
-    const [existingUser] = await db
-      .promise()
-      .query("SELECT * FROM register WHERE email = ?", [email]);
+    const [existingUser] = await db.promise().query("SELECT * FROM register WHERE email = ?",
+       [email]);
     if (existingUser.length > 0) {
       return res.status(400).send("Usuário já registrado");
     }
@@ -20,8 +20,7 @@ const registerUser = async (req, res) => {
     const hashedPassword = await bcrypt.hash(password, 10);
 
     // Inserir o novo usuário no banco de dados
-    await db
-      .promise().query(
+    await db.promise().query(
         "INSERT INTO register (name, email, password, birth_date) VALUES (?, ?, ?, ?)",
         [name, email, hashedPassword, birth_date]
       );
@@ -38,9 +37,7 @@ const loginUser = async (req, res) => {
 
   // Verificar se o usuário existe no banco de dados
   try {
-    const [user] = await db
-      .promise()
-      .query("SELECT * FROM register WHERE email = ?", [email]);
+    const [user] = await db.promise().query("SELECT * FROM register WHERE email = ?",[email]);
     if (user.length === 0) {
       return res.status(400).send("Credenciais inválidas");
     }
@@ -66,26 +63,21 @@ const loginUser = async (req, res) => {
 const requestPasswordReset = async (req, res) => {
   const { email } = req.body;
   try {
-    const [user] = await db
-      .promise()
-      .query("SELECT * FROM register WHERE email = ?", [email]);
+    const [user] = await db.promise().query("SELECT * FROM register WHERE email = ?", [email]);
     if (user.length === 0) {
       return res.status(404).send("Usuário não encontrado");
     }
     const token = crypto.randomBytes(20).toString("hex"); // Gera um token aleatório
     const expireDate = new Date(Date.now() + 3600000); // 1 hora para expiração
     await db
-      .promise()
-      .query(
-        "UPDATE register SET reset_password_token = ?, reset_password_expires = ? WHERE email = ?",
-        [token, expireDate, email]
+      .promise().query( "UPDATE register SET reset_password_token = ?, reset_password_expires = ? WHERE email = ?",
+      [token, expireDate, email]
       );
     const resetLink = `http://localhost:3000/reset-password/${token}`; // Link para redefinição de senha
     sendEmail(
       email,
       "Recuperação de Senha - Sistema de Gerenciamento Finance SENAI",
-      `Por favor, clique no link para redefinir sua
-   senha: ${resetLink}`
+      `Por favor, clique no link para redefinir sua senha: ${resetLink}`
     );
     res.send("E-mail de recuperação de senha enviado");
   } catch (err) {
@@ -98,10 +90,7 @@ const requestPasswordReset = async (req, res) => {
 const resetPassword = async (req, res) => {
   const { token, newPassword } = req.body;
   try {
-    const [user] = await db
-      .promise()
-      .query(
-        "SELECT * FROM users WHERE reset_password_token = ? AND reset_password_expires > NOW()",
+    const [user] = await db.promise().query("SELECT * FROM users WHERE reset_password_token = ? AND reset_password_expires > NOW()",
         [token]
       );
     if (user.length === 0) {
@@ -109,9 +98,7 @@ const resetPassword = async (req, res) => {
     }
     const hashedPassword = await bcrypt.hash(newPassword, 10); // Criptografa a nova senha
     await db
-      .promise()
-      .query(
-        "UPDATE users SET password = ?, reset_password_token = NULL, reset_password_expires = NULL WHERE id = ?",
+      .promise().query("UPDATE users SET password = ?, reset_password_token = NULL, reset_password_expires = NULL WHERE id = ?",
         [hashedPassword, user[0].id]
       );
     res.send("Senha redefinida com sucesso");
@@ -125,5 +112,5 @@ module.exports = {
   registerUser,
   loginUser,
   requestPasswordReset,
-  resetPassword,
+  resetPassword
 };
