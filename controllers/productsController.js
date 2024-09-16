@@ -25,25 +25,27 @@ const addProducts = (req, res) => {
         } 
         res.status(201).send('Novo produto adicionada com sucesso'); 
       } 
+      
     ); 
   };
+
 // Função para atualizar uma transação existente (substituição completa) 
-const updateProductsPut = (req, res) => { 
-    const { id } = req.params; 
-    const {purchase_date, price, details, category, payment, register_id} = req.body; 
-    db.query( 
-      'UPDATE products SET purchase_date = ?, price = ?, details = ?, category = ?, payment = ?, register_id = ? WHERE id = ?', 
-      [purchase_date, price, details, category, payment, register_id ], 
-      (err, results) => { 
-        if (err) { 
-          console.error('Erro ao atualizar produto:', err); 
-          res.status(500).send('Erro ao atualizar produto'); 
-          return; 
-        } 
-        res.send('Transação atualizada com sucesso'); 
-      } 
-    ); 
-  }; 
+const updateProductsPut = (req, res) => {
+    const { id } = req.params;
+    const { purchase_date, price, details, category, payment, register_id } = req.body;
+    db.query(
+      'UPDATE products SET purchase_date = ?, price = ?, details = ?, category = ?, payment = ?, register_id = ? WHERE id = ?',
+      [purchase_date, price, details, category, payment, register_id, id], 
+      (err, results) => {
+        if (err) {
+          console.error('Erro ao atualizar o produto', err);
+          res.status(500).send('Erro ao atualizar o produto');
+          return;
+        }
+        res.send('Produto atualizado com sucesso');
+      }
+    );
+  };
    
    
   // Função para atualizar uma transação existente (atualização parcial) 
